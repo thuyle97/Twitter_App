@@ -8,17 +8,41 @@
 
 import UIKit
 
-class TweetViewController: UIViewController {
+class TweetViewController: UIViewController, UITextViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         tweetTextView.becomeFirstResponder()
 
         // Do any additional setup after loading the view.
+        // Add border to the text view
+        let borderColor : UIColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        tweetTextView.layer.borderWidth = 1.0
+        tweetTextView.layer.borderColor = borderColor.cgColor
+        tweetTextView.layer.cornerRadius = 5.0
+        
+        tweetTextView.delegate = self
+        
     }
     
-    
+    @IBOutlet weak var countLable: UILabel!
     @IBOutlet weak var tweetTextView: UITextView!
+    
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+       // TODO: Check the proposed new text character count
+       // Allow or disallow the new text
+        
+        var characterLimit:Int = 280
+        let newText = NSString(string: tweetTextView.text!).replacingCharacters(in: range, with: text)
+        
+        characterLimit = characterLimit - newText.count
+        
+        countLable.text = "\(characterLimit)"
+        
+        return newText.count < characterLimit
+    }
+
     
     @IBAction func cancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)
